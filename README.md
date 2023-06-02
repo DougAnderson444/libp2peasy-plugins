@@ -7,3 +7,11 @@ This repository contains the PDK for Libp2p. It is a collection of libraries and
 The [examples] folder will contain examples of how to use the PDK.
 
 TODO: This is a hackathon, everything is still in TODO!
+
+## Frontend
+
+```sh
+cd frontend
+npm install
+npm run dev
+```
