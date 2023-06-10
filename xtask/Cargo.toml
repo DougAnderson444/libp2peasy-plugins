@@ -1,0 +1,10 @@
+[package]
+name = "xtask"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+wit-component = "0.11.0" # { git = "https://github.com/bytecodealliance/wasm-tools"}
+toml = "0.7.4"
