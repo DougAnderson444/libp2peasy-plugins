@@ -3,6 +3,42 @@ name = "libp2peasy-plugins"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace]
+members = [".", "plugins/wit-ipns/", "xtask"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+
+[workspace.dependencies.wit-bindgen]
+git = "https://github.com/bytecodealliance/wit-bindgen"
+version = "0.7.0"
 
 [dependencies]
+wasmtime-wasi = { git = "https://github.com/bytecodealliance/wasmtime" } # has wasi linker too
+lazy_static = "1.4.0"
+async-trait = "0.1.68"
+anyhow = "1.0"
+wit-component = "0.11.0"
+
+[dependencies.wasmtime]
+version = "11"
+features = ["component-model", "async", "cranelift"]
+git = 'https://github.com/bytecodealliance/wasmtime'
+default-features = false
+
+[dev-dependencies]
+tokio = { version = "1.11.0", features = ["rt", "macros"] }
+tokio-util = "0.6.8"
+
+[profile.release]
+opt-level = "z"          # Optimize for size.
+lto = true               # Enable Link Time Optimization
+codegen-units = 1        # allow for maximum size reduction optimizations
+strip = true             # Automatically strip symbols from the binary.
+panic = 'abort'          # Abort on panic
+debug = false
+debug-assertions = false
+overflow-checks = false
+incremental = false
+rpath = false
