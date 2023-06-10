@@ -8,6 +8,16 @@ The [examples] folder will contain examples of how to use the PDK.
 
 TODO: This is a hackathon, everything is still in TODO!
 
+1. Enable your libp2p implementation to use the plugin by adding the `loader` to your `on_message` and `on_publish` hooks.
+
+```rust
+// when a message is received, iterate through the plugins and pass the message into each plugin
+```
+
+```js
+// when a message is received, iterate through the plugins and pass the message into each plugin
+```
+
 ## Plugins
 
 ### IPNS
@@ -27,12 +37,12 @@ npm run dev
 
 ## Architecture / Spec
 
-Specification of the Plugin interface
-
-image from frontend/static/architecture.svg
-
 [![architecture](frontend/static/architecture.svg)](frontend/static/architecture.svg)
 
 ## Build Rust Workspace
 
 `cargo build --workspace`
+
+## Build Indidivual Plugin(s)
+
+`cargo xtask dist release`
