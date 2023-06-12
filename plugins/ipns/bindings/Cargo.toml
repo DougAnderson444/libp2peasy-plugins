@@ -1,0 +1,17 @@
+[package]
+name = "ipns-plugin-bindings"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = [
+    "cdylib",
+] # this has to be a cdylib because it will compile to wasm
+
+[dependencies]
+extism-pdk = { git = "https://github.com/extism/rust-pdk.git", version = "0.3.2" }
+ipns-plugin-interface = { version = "0.1.0", path = "../interface" }
+ipns-entry = { git = "https://github.com/DougAnderson444/ipns-utils.git" }
+multihash = "0.18.1"
+serde_json = "1.0.96"
+base64 = "0.21.2"
