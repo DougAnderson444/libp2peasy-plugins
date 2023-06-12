@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace]
-members = [".", "plugins/wit-ipns/", "xtask"]
+members = [".", "plugins/ipns/*"]
 resolver = "2"
 
 [workspace.package]
@@ -15,21 +15,7 @@ git = "https://github.com/bytecodealliance/wit-bindgen"
 version = "0.7.0"
 
 [dependencies]
-wasmtime-wasi = { git = "https://github.com/bytecodealliance/wasmtime" } # has wasi linker too
-lazy_static = "1.4.0"
-async-trait = "0.1.68"
 anyhow = "1.0"
-wit-component = "0.11.0"
-
-[dependencies.wasmtime]
-version = "11"
-features = ["component-model", "async", "cranelift"]
-git = 'https://github.com/bytecodealliance/wasmtime'
-default-features = false
-
-[dev-dependencies]
-tokio = { version = "1.11.0", features = ["rt", "macros"] }
-tokio-util = "0.6.8"
 
 [profile.release]
 opt-level = "z"          # Optimize for size.
