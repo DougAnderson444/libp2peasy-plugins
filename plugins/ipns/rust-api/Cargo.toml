@@ -1,0 +1,15 @@
+[package]
+name = "rust-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+extism = "0.4.0"
+serde_json = "1.0"
+anyhow = "1.0.69"
+ipns-plugin-interface = { version = "0.1.0", path = "../interface" }
+ipns-entry = { git = "https://github.com/DougAnderson444/ipns-utils.git" }
+
+[dependencies.libp2p-identity]
+git = "https://github.com/libp2p/rust-libp2p.git"
+features = ["ed25519", "peerid"]
