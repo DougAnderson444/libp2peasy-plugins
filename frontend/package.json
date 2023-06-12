@@ -29,7 +29,17 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@chainsafe/libp2p-gossipsub": "^7.0.0",
+		"@chainsafe/libp2p-noise": "^11.0.4",
+		"@chainsafe/libp2p-yamux": "^4.0.1",
 		"@extism/runtime-browser": "^0.3.0",
-		"@oddjs/odd": "^0.37.1"
+		"@libp2p/bootstrap": "^6.0.0",
+		"@libp2p/kad-dht": "^9.1.0",
+		"@libp2p/webrtc": "^1.1.10",
+		"@libp2p/webtransport": "^2.0.1",
+		"@oddjs/odd": "^0.37.1",
+		"@stablelib/ed25519": "^1.0.3",
+		"libp2p": "^0.44.0",
+		"multiformats": "^11.0.2"
 	}
 }
