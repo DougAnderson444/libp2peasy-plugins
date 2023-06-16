@@ -40,6 +40,7 @@
 		"@libp2p/webtransport": "^2.0.1",
 		"@oddjs/odd": "^0.37.1",
 		"@stablelib/ed25519": "^1.0.3",
+		"dotenv": "^16.2.0",
 		"libp2p": "^0.44.0",
 		"multiformats": "^11.0.2"
 	}
