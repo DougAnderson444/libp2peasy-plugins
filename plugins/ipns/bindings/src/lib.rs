@@ -1,9 +1,10 @@
 use base64::{engine::general_purpose, Engine as _};
 use extism_pdk::*;
-use ipns_entry::entry::{ed25519, IpnsEntry, PeerId, PublicKey};
-use ipns_entry::signer::{Keypair, Signed, Signer};
+use ipns_entry::entry::{IpnsEntry, PeerId};
+use ipns_entry::signer::{Keypair, Signer};
 use ipns_entry::DataBuilder;
-use ipns_plugin_interface::{GossipsubMessage, Message, SignPublish, SignableData};
+use ipns_plugin_interface::{Message, SignPublish};
+use serde::Deserialize;
 
 const IPNS_PREFIX: &[u8] = b"/ipns/";
 
@@ -12,31 +13,64 @@ extern "ExtismHost" {
     fn publish_host(message: Json<Message>) -> Json<Message>;
 }
 
-// #[host_fn]
-// extern "ExtismHost" {
-//     fn on_message_host(message: Json<Message>) -> Json<Message>;
-// }
+#[host_fn]
+extern "ExtismHost" {
+    fn subscribe_host(topic: Json<String>) -> Json<String>;
+}
 
-// #[host_fn]
-// extern "ExtismHost" {
-//     fn subscribe_host(topic: Json<Message>) -> Json<Message>;
-// }
+#[host_fn]
+extern "ExtismHost" {
+    fn unsubscribe_host(topic: Json<String>) -> Json<String>;
+}
 
-// #[host_fn]
-// extern "ExtismHost" {
-//     fn unsubscribe_host(topic: Json<Message>) -> Json<Message>;
-// }
-
-// #[host_fn]
-// extern "ExtismHost" {
-//     fn signer(message: Json<Vec<u8>>) -> Json<Vec<u8>>;
-// }
+#[derive(Debug, Deserialize)]
+enum Action {
+    Publish(SignPublish),
+    Subscribe {
+        subscribe: bool,
+        peer_id_bytes: Vec<u8>,
+    },
+    Unsubscribe {
+        unsubscribe: bool,
+        peer_id_bytes: Vec<u8>,
+    },
+}
 
 #[plugin_fn]
-pub fn sign_and_publish(input: String) -> FnResult<Json<Message>> {
+pub fn send(input: String) -> FnResult<Json<bool>> {
+    let sent: Action = json::from_str(&input)?;
+
+    match sent {
+        Action::Publish(secret_and_data) => sign_and_publish(secret_and_data),
+        Action::Subscribe {
+            subscribe: _,
+            peer_id_bytes,
+        } => subscribe(&peer_id_bytes),
+        Action::Unsubscribe {
+            unsubscribe: _,
+            peer_id_bytes,
+        } => unsubscribe(&peer_id_bytes),
+    }
+}
+
+pub fn subscribe(peer_id_bytes: &[u8]) -> FnResult<Json<bool>> {
+    let key = peer_id_to_record_key(&peer_id_bytes);
+    let _output = unsafe { subscribe_host(Json(key))? };
+
+    Ok(Json(true))
+}
+
+pub fn unsubscribe(peer_id_bytes: &[u8]) -> FnResult<Json<bool>> {
+    let key = peer_id_to_record_key(&peer_id_bytes);
+    let _output = unsafe { unsubscribe_host(Json(key))? };
+
+    Ok(Json(true))
+}
+
+pub fn sign_and_publish(input: SignPublish) -> FnResult<Json<bool>> {
     // convert the Vec<u8> into a string
     // let data = std::str::from_utf8(input.as_slice())?;
-    let SignPublish { secret, data } = serde_json::from_str(&input)?;
+    let SignPublish { secret, data } = input;
 
     // convert the secret from serde_json::Map<String, serde_json::Value> to Vec<u8>
     let secret = secret
@@ -54,6 +88,17 @@ pub fn sign_and_publish(input: String) -> FnResult<Json<Message>> {
     let routable_bytes = entry.to_bytes();
     let peer_id = PeerId::from_public_key(&signer.public());
 
+    let msg = Message {
+        topic: peer_id_to_record_key(&peer_id.to_bytes()),
+        message: routable_bytes,
+    };
+    let _output = unsafe { publish_host(Json(msg))? };
+
+    Ok(Json(true))
+}
+
+/// A helper function that converts a peer id to a record key.
+pub fn peer_id_to_record_key(peer_id_bytes: &[u8]) -> String {
     // PubSub Routing Record
     // Key format: /ipns/BINARY_ID
     // /ipns/ is the ASCII prefix (bytes in hex: 2f69706e732f)
@@ -63,20 +108,15 @@ pub fn sign_and_publish(input: String) -> FnResult<Json<Message>> {
     // A good practice is to prefix IPNS Name with /ipns/ namespace, and refer to IPNS addresses as /ipns/{ipns-name}
 
     // concat IPNS_PREFIX string with peer_id string
-    let topic = [IPNS_PREFIX.to_vec(), peer_id.to_bytes()].concat();
 
     // pubsub topics must be utf-8
     // use additional wrapping /record/base64url-unpadded(key)
 
-    const RECORD_PREFIX: &str = "/record/";
-    let encoded_key = general_purpose::URL_SAFE_NO_PAD.encode(topic);
-    // concat prefix with encoded key
-    let encoded_url = [RECORD_PREFIX, encoded_key.as_str()].concat();
-    let msg = Message {
-        topic: encoded_url,
-        message: routable_bytes,
-    };
-    let output = unsafe { publish_host(Json(msg))? };
-
-    Ok(output)
+    [
+        "/record/",
+        general_purpose::URL_SAFE_NO_PAD
+            .encode([IPNS_PREFIX, peer_id_bytes].concat())
+            .as_str(),
+    ]
+    .concat()
 }
