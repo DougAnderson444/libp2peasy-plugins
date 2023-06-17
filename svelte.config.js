@@ -4,9 +4,6 @@ import 'dotenv/config';
 
 const dev = process.argv.includes('dev');
 
-console.log('dev', dev);
-console.log('base path', process.env.BASE_PATH);
-
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	kit: {
