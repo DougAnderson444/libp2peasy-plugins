@@ -1,0 +1,36 @@
+[package]
+name = "ipns-wit"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = { workspace = true }
+getrandom = { version = "0.2.10" }
+ipns-entry = { git = "https://github.com/DougAnderson444/ipns-utils.git" }
+base64 = "0.21.2"
+
+[dependencies.wit-bindgen]
+workspace = true
+
+[dev-dependencies.wasmtime]
+workspace = true
+
+[dev-dependencies]
+wasmtime-wasi = { workspace = true }
+lazy_static = { workspace = true }
+tokio = { workspace = true }
+async-trait = "0.1.68"
+
+[dev-dependencies.libp2p-identity]
+git = "https://github.com/libp2p/rust-libp2p.git"
+features = ["ed25519", "peerid"]
+
+# if target is wasm32-unknown-unknown but NOT wasm32-wasi, use getrandom with `js` feature
+[target.wasm32-unknown-unknown.dependencies]
+getrandom = { version = "0.2.10", features = ["js"] }
+
+[target.wasm32-wasi.dependencies]
+getrandom = { version = "0.2.10" }

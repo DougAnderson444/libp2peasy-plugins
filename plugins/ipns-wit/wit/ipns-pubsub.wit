@@ -1,0 +1,30 @@
+package peerpiper:ipns-pubsub
+
+interface types {
+  record message {
+    topic: string,
+    message: list<u8>
+  }
+}
+
+interface imports {
+  use types.{message}
+
+  prnt: func(msg: string)
+  publish: func(msg: message)
+  subscribe: func(topic: string)
+  unsubscribe: func(topic: string)
+}
+
+world ipns-pubsub {
+
+  use types.{message}
+
+  import imports
+
+  export publish: func(cid: string, secret: list<u8>) -> result<message, string>
+  export subscribe: func(topic: string)
+  export unsubscribe: func(topic: string)
+  export types
+
+}
