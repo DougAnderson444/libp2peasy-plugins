@@ -31,7 +31,7 @@ impl IpnsPubsub for Exports {
 
         let msg = peerpiper::ipns_pubsub::types::Message {
             topic: peer_id_to_record_key(&peer_id.to_bytes()),
-            message: routable_bytes,
+            record: routable_bytes,
         };
 
         peerpiper::ipns_pubsub::imports::publish(&msg);

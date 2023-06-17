@@ -3,7 +3,7 @@ package peerpiper:ipns-pubsub
 interface types {
   record message {
     topic: string,
-    message: list<u8>
+    record: list<u8>
   }
 }
 
