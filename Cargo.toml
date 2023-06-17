@@ -1,14 +1,15 @@
-[package]
-name = "libp2peasy-plugins"
-version = "0.1.0"
-edition = "2021"
+# [package]
+# name = "libp2peasy-plugins"
+# version = "0.1.0"
+# edition = "2021"
 
 [workspace]
 members = [
     "plugins/ipns/bindings",
     "plugins/ipns/interface",
+    "plugins/ipns-wit",
     "plugins/zookan",
-    "plugins/wallet",
+    "xtask",
 ]
 exclude = ["plugins/ipns/rust-api"] # wasmtime conflicts
 resolver = "2"
@@ -18,10 +19,18 @@ edition = "2021"
 
 [workspace.dependencies]
 anyhow = "1.0"
+lazy_static = "1.4.0"
+tokio = { version = "1.11.0", features = ["rt", "macros"] }
+wasmtime-wasi = { git = "https://github.com/bytecodealliance/wasmtime" } # has wasi linker too
 
 [workspace.dependencies.wit-bindgen]
 git = "https://github.com/bytecodealliance/wit-bindgen"
 version = "0.7.0"
+
+[workspace.dependencies.wasmtime]
+version = "11"
+features = ["component-model"]
+git = 'https://github.com/bytecodealliance/wasmtime'
 
 [profile.release]
 opt-level = "z"          # Optimize for size.
