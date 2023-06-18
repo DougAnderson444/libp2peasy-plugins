@@ -2,6 +2,12 @@
 
 This repository contains the PDK for Libp2p. It is a collection of libraries and tools that can be used to build Libp2p plugins.
 
+## Demo
+
+[https://douganderson444.github.io/libp2peasy-plugins](https://douganderson444.github.io/libp2peasy-plugins)
+
+Load the [pre-built `wasm` file](dist/ipns-extism/ipns_plugin_bindings.wasm)
+
 ## Usage
 
 The [examples] folder will contain examples of how to use the PDK.
