@@ -1,0 +1,20 @@
+[package]
+name = "zookan"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+delanocreds = { path = "../../../delanocreds" }
+
+[dev-dependencies]
+anyhow = { workspace = true }
+wasmtime-wasi = { git = "https://github.com/bytecodealliance/wasmtime" } # has wasi linker too
+tokio = { version = "1.11.0", features = ["rt", "macros"] }
+
+[dev-dependencies.wasmtime]
+version = "11"
+features = ["component-model"]
+git = 'https://github.com/bytecodealliance/wasmtime'

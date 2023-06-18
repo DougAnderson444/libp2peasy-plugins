@@ -1,0 +1,18 @@
+import { CliBaseEnvironment as CliBaseEnvironmentImports } from './imports/cli-base-environment';
+import { CliBasePreopens as CliBasePreopensImports } from './imports/cli-base-preopens';
+import { CliBaseExit as CliBaseExitImports } from './imports/cli-base-exit';
+import { CliBaseStdin as CliBaseStdinImports } from './imports/cli-base-stdin';
+import { CliBaseStdout as CliBaseStdoutImports } from './imports/cli-base-stdout';
+import { CliBaseStderr as CliBaseStderrImports } from './imports/cli-base-stderr';
+import { ClocksWallClock as ClocksWallClockImports } from './imports/clocks-wall-clock';
+import { ClocksMonotonicClock as ClocksMonotonicClockImports } from './imports/clocks-monotonic-clock';
+import { FilesystemFilesystem as FilesystemFilesystemImports } from './imports/filesystem-filesystem';
+import { IoStreams as IoStreamsImports } from './imports/io-streams';
+import { IpnsPubsubTypes as IpnsPubsubTypesImports } from './imports/ipns-pubsub-types';
+import { IpnsPubsubImports as IpnsPubsubImportsImports } from './imports/ipns-pubsub-imports';
+import { IpnsPubsubTypes as IpnsPubsubTypesExports } from './exports/ipns-pubsub-types';
+export const ipnsPubsubTypes: typeof IpnsPubsubTypesExports;
+export const types: typeof IpnsPubsubTypesExports;
+export function publish(cid: string, secret: Uint8Array | ArrayBuffer): Message;
+export function subscribe(topic: string): void;
+export function unsubscribe(topic: string): void;

@@ -16,6 +16,7 @@ export async function register({ manifest, functions, config }) {
 	for (let func of funcs) {
 		if (func === 'memory') continue;
 		proxy[func] = async function (...args) {
+			console.log('calling', func, args);
 			return await plugin.call(func, args[0]);
 		};
 	}

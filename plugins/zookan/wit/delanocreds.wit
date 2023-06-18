@@ -1,0 +1,12 @@
+// Package namespace:packagename@sem.ver.sion
+package peerpiper:delanocreds@0.0.1
+
+// WIT Interfaces
+// The concept of an "interface" is central in WIT as a collection of functions and types.
+interface imports {
+
+}
+
+world delanocreds {
+
+}

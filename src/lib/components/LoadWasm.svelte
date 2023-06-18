@@ -3,7 +3,9 @@
 	import { createEventDispatcher } from 'svelte';
 	export let pluginFile;
 
+	const files = new Map();
 	let fileinput;
+	let name;
 
 	const dispatch = createEventDispatcher();
 
@@ -18,9 +20,18 @@
 		let plugin = e.target.files[0];
 		let reader = new FileReader();
 
-		reader.addEventListener('loadend', () => {
+		files.set(reader, plugin);
+
+		reader.addEventListener('loadend', (evt) => {
+			console.log('reader.result', { reader }, { evt });
 			// reader.result contains the contents of blob as a typed array
-			pluginFile = reader.result;
+			pluginFile = { bytes: reader.result, name };
+		});
+
+		reader.addEventListener('load', (evt) => {
+			const file = files.get(evt.target);
+			console.log(`The contents of ${file.name}:`);
+			name = file.name;
 		});
 
 		// reader.readAsDataURL(plugin);
@@ -45,7 +56,7 @@
 		fileinput.click();
 	}}
 >
-	Load
+	Load *.wasm file
 </div>
 
 <!-- Display bytes -->

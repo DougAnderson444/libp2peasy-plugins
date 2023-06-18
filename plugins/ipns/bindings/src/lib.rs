@@ -4,7 +4,7 @@ use ipns_entry::entry::{IpnsEntry, PeerId};
 use ipns_entry::signer::{Keypair, Signer};
 use ipns_entry::DataBuilder;
 use ipns_plugin_interface::{Message, SignPublish};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 const IPNS_PREFIX: &[u8] = b"/ipns/";
 
@@ -27,47 +27,55 @@ extern "ExtismHost" {
 enum Action {
     Publish(SignPublish),
     Subscribe {
-        subscribe: bool,
-        peer_id_bytes: Vec<u8>,
+        peer_id_bytes: json::Map<String, json::Value>,
     },
     Unsubscribe {
-        unsubscribe: bool,
-        peer_id_bytes: Vec<u8>,
+        peer_id_bytes: json::Map<String, json::Value>,
     },
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Response {
+    Message(Message),
+    Bool(bool),
+}
+
 #[plugin_fn]
-pub fn send(input: String) -> FnResult<Json<bool>> {
+pub fn send(input: String) -> FnResult<Json<Response>> {
     let sent: Action = json::from_str(&input)?;
 
     match sent {
         Action::Publish(secret_and_data) => sign_and_publish(secret_and_data),
-        Action::Subscribe {
-            subscribe: _,
-            peer_id_bytes,
-        } => subscribe(&peer_id_bytes),
-        Action::Unsubscribe {
-            unsubscribe: _,
-            peer_id_bytes,
-        } => unsubscribe(&peer_id_bytes),
+        Action::Subscribe { peer_id_bytes } => subscribe(peer_id_bytes),
+        Action::Unsubscribe { peer_id_bytes } => unsubscribe(peer_id_bytes),
     }
 }
 
-pub fn subscribe(peer_id_bytes: &[u8]) -> FnResult<Json<bool>> {
+pub fn subscribe(peer_id_bytes: json::Map<String, json::Value>) -> FnResult<Json<Response>> {
+    let peer_id_bytes = peer_id_bytes
+        .into_iter()
+        .map(|(_, v)| v.as_u64().unwrap() as u8)
+        .collect::<Vec<u8>>();
+
     let key = peer_id_to_record_key(&peer_id_bytes);
     let _output = unsafe { subscribe_host(Json(key))? };
 
-    Ok(Json(true))
+    Ok(Json(Response::Bool(true)))
 }
 
-pub fn unsubscribe(peer_id_bytes: &[u8]) -> FnResult<Json<bool>> {
+pub fn unsubscribe(peer_id_bytes: json::Map<String, json::Value>) -> FnResult<Json<Response>> {
+    let peer_id_bytes = peer_id_bytes
+        .into_iter()
+        .map(|(_, v)| v.as_u64().unwrap() as u8)
+        .collect::<Vec<u8>>();
+
     let key = peer_id_to_record_key(&peer_id_bytes);
     let _output = unsafe { unsubscribe_host(Json(key))? };
 
-    Ok(Json(true))
+    Ok(Json(Response::Bool(true)))
 }
 
-pub fn sign_and_publish(input: SignPublish) -> FnResult<Json<bool>> {
+pub fn sign_and_publish(input: SignPublish) -> FnResult<Json<Response>> {
     // convert the Vec<u8> into a string
     // let data = std::str::from_utf8(input.as_slice())?;
     let SignPublish { secret, data } = input;
@@ -92,9 +100,9 @@ pub fn sign_and_publish(input: SignPublish) -> FnResult<Json<bool>> {
         topic: peer_id_to_record_key(&peer_id.to_bytes()),
         message: routable_bytes,
     };
-    let _output = unsafe { publish_host(Json(msg))? };
+    let _output = unsafe { publish_host(Json(msg.clone()))? };
 
-    Ok(Json(true))
+    Ok(Json(Response::Message(msg)))
 }
 
 /// A helper function that converts a peer id to a record key.

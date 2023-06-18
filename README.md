@@ -45,4 +45,14 @@ npm run dev
 
 ## Build Indidivual Plugin(s)
 
-`cargo xtask dist release`
+Run the batch file:
+
+`./build_dist.bat`
+
+## Run the Example Plugin Use (in Rust)
+
+`cargo run --example ipns_wit`
+
+## Run the Example Plugin Use (in JS)
+
+TODO: But the js bindings are in `dist/ipns-wit/js`
