@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
+	import { assets, base } from '$app/paths';
+
 	import Plugin from '$lib/components/Plugin.svelte';
 	import Send from '$lib/components/Send.svelte';
 	import Received from '$lib/components/Received.svelte';
@@ -123,6 +125,14 @@
 		<div class="flex-1 flex-row">
 			<div class="flex-1 flex-row">Peer ID</div>
 			<div class="flex-1 flex-row">{myPeerId}</div>
+		</div>
+	{/if}
+	{#if plugins.length == 0}
+		<div class="flex-1 flex-row text-xl">
+			Downloadload <a
+				href="{base}/ipns_plugin_bindings.wasm"
+				class="underline border rounded border-green-400 p-4">example plugin from here</a
+			>
 		</div>
 	{/if}
 	{#each plugins as { plugin }, p}
