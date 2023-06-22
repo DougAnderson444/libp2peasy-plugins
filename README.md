@@ -12,7 +12,11 @@ Load the [pre-built `wasm` file](dist/ipns-extism/ipns_plugin_bindings.wasm)
 
 The [examples] folder will contain examples of how to use the PDK.
 
-TODO: This is a hackathon, everything is still in TODO!
+YouTube Link:
+
+<!-- Insert Youtub video with thumnail -->
+
+[![thumbnail](./thumbnail.png)](https://youtu.be/3hBFgrRNrLk)
 
 1. Enable your libp2p implementation to use the plugin by adding the `loader` to your `on_message` and `on_publish` hooks.
 
